@@ -6,11 +6,14 @@ export default defineConfig({
   runner: {
     startUrls: ["https://wxt.dev"],
   },
-  content_scripts: [
-    {
-      matches: ["<all_urls>"],
-      js: ["content/index.ts"],
-    },
-  ],
-  permissions: ["tabs", "scripting"],
+
+  manifest: {
+    content_scripts: [
+      {
+        matches: ["<all_urls>"],
+        js: ["content/index.ts"],
+      },
+    ],
+    permissions: ["tabs"],
+  },
 });
