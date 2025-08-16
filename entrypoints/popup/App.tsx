@@ -3,6 +3,8 @@ import SearchBar from "./components/SearchBar";
 import { COLORS } from "../shared/colors";
 import { FaPlus } from "react-icons/fa6";
 
+import { storage } from "#imports";
+
 type Count = { current: number; total: number };
 
 type SearchBarData = {
@@ -13,6 +15,32 @@ type SearchBarData = {
 
 export default function Popup() {
   const [bars, setBars] = useState<SearchBarData[]>([{ id: 1, keyword: "", count: { current: 0, total: 0 } }]);
+
+  useEffect(() => {
+    (async () => {
+      const stored = await storage.getItem<SearchBarData[]>("local:searchHistory");
+      if (stored) {
+        setBars(stored);
+
+        stored.forEach(async (bar, index) => {
+          if (bar.keyword) {
+            const res = await sendMessage("SEARCH_TEXT", {
+              id: bar.id,
+              keyword: bar.keyword,
+              index,
+              scroll: false,
+            });
+
+            if (res) {
+              setBars((prev) => prev.map((b) => (b.id === bar.id ? { ...b, count: res } : b)));
+            }
+          }
+        });
+      } else {
+        setBars([{ id: 1, keyword: "", count: { current: 0, total: 0 } }]);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const port = chrome.runtime.connect({ name: "popup" });
@@ -38,6 +66,11 @@ export default function Popup() {
     if (res) {
       setBars((prev) => prev.map((b) => (b.id === id ? { ...b, count: res } : b)));
     }
+
+    storage.setItem(
+      "local:searchHistory",
+      bars.map((b) => (b.id === id ? { ...b, keyword: value, count: res ?? b.count } : b))
+    );
   };
 
   const handleNext = async (id: number) => {

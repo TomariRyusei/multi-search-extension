@@ -14,6 +14,6 @@ export default defineConfig({
         js: ["content/index.ts"],
       },
     ],
-    permissions: ["tabs"],
+    permissions: ["tabs", "storage"],
   },
 });

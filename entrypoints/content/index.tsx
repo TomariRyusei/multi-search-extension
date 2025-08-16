@@ -11,10 +11,10 @@ export default defineContentScript({
     const searches: Record<number, SearchState> = {};
 
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-      const { id, keyword, index } = msg.payload || {};
+      const { id, keyword, index, scroll } = msg.payload || {};
 
       if (msg.type === "SEARCH_TEXT") {
-        sendResponse(highlightText(id, keyword, index));
+        sendResponse(highlightText(id, keyword, index, { scroll }));
       }
 
       if (msg.type === "NEXT_MATCH") {
@@ -31,7 +31,7 @@ export default defineContentScript({
       }
     });
 
-    function highlightText(id: number, keyword: string, index: number) {
+    function highlightText(id: number, keyword: string, index: number, opts?: { scroll?: boolean }) {
       // 既存のハイライト削除
       document.querySelectorAll(`mark.___highlight_${id}`).forEach((el) => {
         const parent = el.parentNode;
@@ -53,7 +53,10 @@ export default defineContentScript({
       if (searches[id].matches.length > 0) {
         searches[id].matches[0].classList.add(`___active_${id}`);
         searches[id].matches[0].style.backgroundColor = FOCUSED_COLORS[index];
-        searches[id].matches[0].scrollIntoView({ behavior: "smooth", block: "center" });
+
+        if (opts?.scroll !== false) {
+          searches[id].matches[0].scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       }
 
       return { current: searches[id].matches.length > 0 ? 1 : 0, total: searches[id].matches.length };
