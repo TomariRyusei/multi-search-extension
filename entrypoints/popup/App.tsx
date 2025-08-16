@@ -1,54 +1,15 @@
-import { useState, useEffect, use } from "react";
+import { useEffect } from "react";
+
 import SearchBar from "./components/SearchBar";
 import { COLORS } from "../shared/colors";
 import { FaPlus } from "react-icons/fa6";
-
-import { storage } from "#imports";
-
-type Count = { current: number; total: number };
-
-type SearchBarData = {
-  id: number;
-  keyword: string;
-  count: Count;
-};
+import { useSearchBars, createEmptyBar } from "./hooks/useSearchBars";
 
 export default function Popup() {
-  const [bars, setBars] = useState<SearchBarData[]>([{ id: 1, keyword: "", count: { current: 0, total: 0 } }]);
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SearchBarData[]>("local:searchHistory");
-      if (stored) {
-        setBars(stored);
-
-        stored.forEach(async (bar, index) => {
-          if (bar.keyword) {
-            const res = await sendMessage("SEARCH_TEXT", {
-              id: bar.id,
-              keyword: bar.keyword,
-              index,
-              scroll: false,
-            });
-
-            if (res) {
-              setBars((prev) => prev.map((b) => (b.id === bar.id ? { ...b, count: res } : b)));
-            }
-          }
-        });
-      } else {
-        setBars([{ id: 1, keyword: "", count: { current: 0, total: 0 } }]);
-      }
-    })();
-  }, []);
-
   useEffect(() => {
     const port = chrome.runtime.connect({ name: "popup" });
 
-    return () => {
-      // 閉じられた時に接続を切る
-      port.disconnect();
-    };
+    return () => port.disconnect();
   }, []);
 
   const sendMessage = async (type: string, payload?: any) => {
@@ -59,25 +20,21 @@ export default function Popup() {
     }
   };
 
+  const { bars, updateBars } = useSearchBars(sendMessage);
+
   const handleChange = async (id: number, value: string) => {
-    setBars((prev) => prev.map((b) => (b.id === id ? { ...b, keyword: value } : b)));
     const index = bars.findIndex((b) => b.id === id);
     const res = await sendMessage("SEARCH_TEXT", { id, keyword: value, index });
     if (res) {
-      setBars((prev) => prev.map((b) => (b.id === id ? { ...b, count: res } : b)));
+      updateBars((prev) => prev.map((b) => (b.id === id ? { ...b, keyword: value, count: res ?? b.count } : b)));
     }
-
-    storage.setItem(
-      "local:searchHistory",
-      bars.map((b) => (b.id === id ? { ...b, keyword: value, count: res ?? b.count } : b))
-    );
   };
 
   const handleNext = async (id: number) => {
     const index = bars.findIndex((b) => b.id === id);
     const res = await sendMessage("NEXT_MATCH", { id, index });
     if (res) {
-      setBars((prev) => prev.map((b) => (b.id === id ? { ...b, count: res } : b)));
+      updateBars((prev) => prev.map((b) => (b.id === id ? { ...b, count: res } : b)));
     }
   };
 
@@ -85,7 +42,7 @@ export default function Popup() {
     const index = bars.findIndex((b) => b.id === id);
     const res = await sendMessage("PREV_MATCH", { id, index });
     if (res) {
-      setBars((prev) => prev.map((b) => (b.id === id ? { ...b, count: res } : b)));
+      updateBars((prev) => prev.map((b) => (b.id === id ? { ...b, count: res } : b)));
     }
   };
 
@@ -94,16 +51,17 @@ export default function Popup() {
     await sendMessage("SEARCH_TEXT", { id, keyword: "", index });
 
     if (bars.length === 1) {
-      setBars([{ id: 1, keyword: "", count: { current: 0, total: 0 } }]);
+      updateBars(() => [createEmptyBar(Date.now())]);
       return;
     }
 
-    setBars((prev) => prev.filter((b) => b.id !== id));
+    const cleared = bars.filter((b) => b.id !== id);
+    updateBars(() => cleared);
   };
 
   const addBar = () => {
     if (bars.length < 5) {
-      setBars((prev) => [...prev, { id: Date.now(), keyword: "", count: { current: 0, total: 0 } }]);
+      updateBars((prev) => [...prev, createEmptyBar(Date.now())]);
     }
   };
 
