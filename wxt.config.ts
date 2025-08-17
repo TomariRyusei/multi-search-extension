@@ -9,7 +9,7 @@ export default defineConfig({
       plugins: [tailwindcss()],
     } as WxtViteConfig),
   modules: ["@wxt-dev/module-react"],
-  runner: {
+  webExt: {
     startUrls: ["https://wxt.dev"],
   },
 
