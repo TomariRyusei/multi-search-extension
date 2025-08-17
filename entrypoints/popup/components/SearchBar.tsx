@@ -1,6 +1,6 @@
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
-import IconButton from "./IconButton/IconButton";
+import IconButton from "./IconButton";
 
 export type SearchBarProps = {
   id: number;
@@ -16,31 +16,15 @@ export type SearchBarProps = {
 const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChange, onNext, onPrev, onClear }) => {
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        marginBottom: "10px",
-        background: "#2b2b2b",
-        color: "white",
-        borderRadius: "8px",
-        padding: "4px 8px",
-        height: "32px",
-        border: `2px solid ${color}`,
-      }}
+      className="flex items-center mb-2.5 bg-[#2b2b2b] text-white rounded-lg px-2 py-3 h-11 border-2"
+      style={{ borderColor: color }}
     >
       <input
         value={keyword}
         onChange={(e) => onChange(id, e.target.value)}
-        style={{
-          flex: 1,
-          backgroundColor: "transparent",
-          border: "none",
-          outline: "none",
-          color: "white",
-          fontSize: "13px",
-        }}
+        className="flex-1 bg-transparent border-none outline-none text-white text-sm"
       />
-      <span style={{ margin: "0 8px", fontSize: "13px", whiteSpace: "nowrap", fontWeight: "bold" }}>
+      <span className="mx-2 text-sm whitespace-nowrap font-bold">
         {count.current} / {count.total}
       </span>
       <IconButton onClick={() => onPrev(id)}>
@@ -49,7 +33,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
       <IconButton onClick={() => onNext(id)}>
         <MdOutlineKeyboardArrowDown />
       </IconButton>
-      <IconButton size={20} onClick={() => onClear(id)}>
+      <IconButton onClick={() => onClear(id)}>
         <IoIosClose />
       </IconButton>
     </div>

@@ -66,7 +66,7 @@ export default function Popup() {
   };
 
   return (
-    <div style={{ background: "#2b2b2b", padding: "10px", borderRadius: "8px", minWidth: "300px" }}>
+    <div className="bg-[#2b2b2b] p-3 rounded-lg min-w-[300px]">
       {bars.map((bar, index) => (
         <SearchBar
           key={bar.id}
@@ -83,23 +83,9 @@ export default function Popup() {
       {bars.length < 5 && (
         <button
           onClick={addBar}
-          style={{
-            width: "100%",
-            padding: "6px",
-            border: "none",
-            borderRadius: "8px",
-            background: "#4caf50",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "4px",
-          }}
+          className="w-full p-2.5 rounded-lg bg-[#4caf50] text-white cursor-pointer text-sm font-bold flex items-center justify-center gap-1 hover:bg-[#45a049]"
         >
-          <FaPlus /> 検索バー追加
+          <FaPlus /> Add Search Bar
         </button>
       )}
     </div>

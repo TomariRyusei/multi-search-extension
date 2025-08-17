@@ -1,5 +1,5 @@
+@import "tailwindcss";
+
 :root {
-  color-scheme: light dark;
-  background-color: transparent;
-  font-synthesis: none;
+  background-color: #2b2b2b;
 }
