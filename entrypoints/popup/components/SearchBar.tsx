@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
 import IconButton from "./IconButton";
@@ -14,15 +16,25 @@ export type SearchBarProps = {
 };
 
 const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChange, onNext, onPrev, onClear }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <div
       className="flex items-center mb-2.5 bg-[#2b2b2b] text-white rounded-lg px-2 py-3 h-11 border-2"
       style={{ borderColor: color }}
     >
       <input
+        ref={inputRef}
         value={keyword}
         onChange={(e) => onChange(id, e.target.value)}
         className="flex-1 bg-transparent border-none outline-none text-white text-sm"
+        autoComplete="off"
       />
       <span className="mx-2 text-sm whitespace-nowrap font-bold">
         {count.current} / {count.total}
