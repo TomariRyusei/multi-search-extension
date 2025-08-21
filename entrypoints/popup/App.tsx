@@ -55,8 +55,13 @@ export default function Popup() {
       return;
     }
 
-    const cleared = bars.filter((b) => b.id !== id);
-    updateBars(() => cleared);
+    const newBars = bars.filter((b) => b.id !== id);
+    // 削除後に新しい検索バーで再度検索(ハイライト色のズレ防止)
+    newBars.forEach(async (b, index) => {
+      await sendMessage("SEARCH_TEXT", { id: b.id, keyword: b.keyword, index });
+    });
+
+    updateBars(() => newBars);
   };
 
   const addBar = () => {
