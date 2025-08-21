@@ -65,6 +65,8 @@ export default function Popup() {
     }
   };
 
+  const isMaxReached = bars.length >= 5;
+
   return (
     <div className="bg-[#2b2b2b] p-3 rounded-lg min-w-[300px]">
       {bars.map((bar, index) => (
@@ -80,14 +82,18 @@ export default function Popup() {
           onClear={handleClear}
         />
       ))}
-      {bars.length < 5 && (
-        <button
-          onClick={addBar}
-          className="w-full p-2.5 rounded-lg bg-[#4caf50] text-white cursor-pointer text-sm font-bold flex items-center justify-center gap-1 hover:bg-[#45a049]"
-        >
-          <FaPlus /> Add Search Bar
-        </button>
-      )}
+      <button
+        onClick={addBar}
+        disabled={isMaxReached}
+        title={isMaxReached ? "Maximum 5 search bars allowed" : "Add new search bar"}
+        className={`w-full p-2.5 rounded-lg text-white text-sm font-bold flex items-center justify-center gap-1 transition-all duration-200 ${
+          isMaxReached
+            ? "bg-gray-500 text-gray-300 cursor-not-allowed opacity-50"
+            : "bg-[#4caf50] cursor-pointer hover:bg-[#45a049]"
+        }`}
+      >
+        <FaPlus /> Add Search Bar ({bars.length}/5)
+      </button>
     </div>
   );
 }
