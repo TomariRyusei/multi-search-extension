@@ -18,7 +18,7 @@ export default defineContentScript({
         case "PREV_MATCH":
           sendResponse(textHighlighter.moveToPrevious(id, index));
           break;
-        case "RESET_HIGHLIGHT":
+        case "RESET_ALL":
           textHighlighter.resetAll();
           sendResponse({ ok: true });
           break;
