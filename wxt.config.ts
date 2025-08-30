@@ -34,12 +34,6 @@ export default defineConfig({
     side_panel: {
       default_path: "sidepanel/index.html",
     },
-    content_scripts: [
-      {
-        matches: ["<all_urls>"],
-        js: ["content/index.ts"],
-      },
-    ],
     permissions: ["storage", "sidePanel"],
   },
 });
