@@ -73,7 +73,7 @@ export default function SidePanelApp() {
     <div className="bg-[#2b2b2b] min-h-screen p-4">
       <div className="max-w-md mx-auto">
         <div className="mb-4">
-          <h1 className="text-white text-lg font-bold mb-2">Multiple Search Extension</h1>
+          <h1 className="text-white text-lg font-bold mb-2">MultiSearch</h1>
           <p className="text-gray-400 text-sm">Search for multiple terms simultaneously on the current page.</p>
         </div>
 

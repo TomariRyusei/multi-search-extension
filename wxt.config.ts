@@ -29,9 +29,8 @@ export default defineConfig({
         "96": "icon-96.png",
         "128": "icon-128.png",
       },
-      default_title: "Multiple Search",
+      default_title: "MultiSearch",
     },
-    // サイドパネルの設定を追加
     side_panel: {
       default_path: "sidepanel/index.html",
     },
@@ -41,7 +40,6 @@ export default defineConfig({
         js: ["content/index.ts"],
       },
     ],
-    // サイドパネル権限を追加
-    permissions: ["tabs", "storage", "sidePanel"],
+    permissions: ["storage", "sidePanel"],
   },
 });
