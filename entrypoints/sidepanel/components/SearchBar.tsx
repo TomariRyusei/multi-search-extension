@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
 import IconButton from "./IconButton";
@@ -17,6 +15,8 @@ export type SearchBarProps = {
 
 const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChange, onNext, onPrev, onClear }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isComposing, setIsComposing] = useState(false);
+  const [localValue, setLocalValue] = useState(keyword);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -24,13 +24,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
     }
   }, []);
 
+  // 親からkeywordが更新されたら同期
+  useEffect(() => {
+    setLocalValue(keyword);
+  }, [keyword]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Enterキーで次の検索結果に移動
     if (e.key === "Enter") {
       e.preventDefault();
       if (count.total > 0) {
         onNext(id);
       }
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalValue(value); // ローカル更新 → 入力欄には即出る
+
+    if (!isComposing) {
+      onChange(id, value); // 半角/確定済みは即反映
     }
   };
 
@@ -41,8 +54,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
     >
       <input
         ref={inputRef}
-        value={keyword}
-        onChange={(e) => onChange(id, e.target.value)}
+        value={localValue}
+        onChange={handleChange}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={(e) => {
+          const value = e.currentTarget.value;
+          setIsComposing(false);
+          setLocalValue(value);
+          onChange(id, value);
+        }}
         onKeyDown={handleKeyDown}
         className="flex-1 bg-transparent border-none outline-none text-white text-sm"
         autoComplete="off"
