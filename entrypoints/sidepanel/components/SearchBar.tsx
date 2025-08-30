@@ -24,6 +24,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
     }
   }, []);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Enterキーで次の検索結果に移動
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (count.total > 0) {
+        onNext(id);
+      }
+    }
+  };
+
   return (
     <div
       className="flex items-center mb-2.5 bg-[#2b2b2b] text-white rounded-lg px-2 py-3 h-11 border-2"
@@ -33,6 +43,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
         ref={inputRef}
         value={keyword}
         onChange={(e) => onChange(id, e.target.value)}
+        onKeyDown={handleKeyDown}
         className="flex-1 bg-transparent border-none outline-none text-white text-sm"
         autoComplete="off"
       />
