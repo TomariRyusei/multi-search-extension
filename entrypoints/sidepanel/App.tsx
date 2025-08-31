@@ -112,6 +112,9 @@ export default function SidePanelApp() {
             <div>• Use ◀ ▶ buttons to navigate between matches</div>
             <div>• Click ✕ to clear a search</div>
             <div>• Maximum of 5 search bars allowed</div>
+            <div className="text-yellow-400 font-bold mt-5">
+              If the extension does not work, please reload the page and try again.
+            </div>
           </div>
         </div>
       </div>
