@@ -32,9 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (count.total > 0) {
-        onNext(id);
-      }
+      onChange(id, localValue);
     }
   };
 
