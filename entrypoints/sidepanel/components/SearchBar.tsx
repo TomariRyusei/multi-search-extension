@@ -60,7 +60,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
         onCompositionEnd={(e) => {
           const value = e.currentTarget.value;
           setIsComposing(false);
-          setLocalValue(value);
           onChange(id, value);
         }}
         onKeyDown={handleKeyDown}
