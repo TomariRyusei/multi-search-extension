@@ -31,14 +31,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault();
-      onChange(id, localValue);
+      onNext(id);
     }
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    onChange(id, localValue);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setLocalValue(value); // ローカル更新 → 入力欄には即出る
+    setLocalValue(value);
 
     if (!isComposing) {
       onChange(id, value); // 半角/確定済みは即反映
@@ -61,6 +64,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ id, keyword, color, count, onChan
           onChange(id, value);
         }}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
         className="flex-1 bg-transparent border-none outline-none text-white text-sm"
         autoComplete="off"
       />
