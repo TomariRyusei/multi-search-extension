@@ -14,6 +14,9 @@ export default defineConfig({
   },
 
   manifest: {
+    version: "1.0.0",
+    name: "MultiSearch",
+    description: "A browser extension that allows you to have multiple search bars for searching text on a webpage.",
     icons: {
       "16": "icon-16.png",
       "32": "icon-32.png",

@@ -1,7 +1,7 @@
 import { COLORS, FOCUSED_COLORS } from "../shared/colors";
 
 export default defineContentScript({
-  matches: ["<all_urls>"],
+  matches: ["https://*/*", "http://*/*"],
   main() {
     const textHighlighter = new TextHighlighter();
 
